@@ -84,6 +84,11 @@ group :test do
   gem 'guard-rspec'
 end
 
+group :development do
+  gem 'debugger'
+end
+
+
 
 
 # =================================================== Other plugins and engines

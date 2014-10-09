@@ -26,6 +26,9 @@ module Dradis
       # -- Scopes ---------------------------------------------------------------
 
       # -- Class Methods --------------------------------------------------------
+      def self.search(keyword)
+        where('text LIKE ?', "%#{keyword}%")
+      end
 
       # Create a hash with all issues where the keys correspond to the field passed
       # as an argument

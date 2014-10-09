@@ -29,6 +29,8 @@ Dradis::Frontend::Engine.routes.draw do
   get  '/upload/status' => 'upload#status'
 
 
+  # ----------------------------------------------------- Search
+  get  '/search' => 'search#search', as: :search
 
   # ------------------------------------------------------------ Authentication
   # These routes allow users to set the shared password

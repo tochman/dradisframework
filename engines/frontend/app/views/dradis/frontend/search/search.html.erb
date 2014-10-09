@@ -1,0 +1,32 @@
+<% title 'Search' %>
+
+<div class="row-fluid">
+  <div class="span12">
+    <div class="inner">
+      <h2>Search results</h2>
+      <p>We did not find anything.</p>
+      <% unless @issues.nil? %>
+          <ul>
+            <% for issue in @issues do %>
+                <li><%= link_to try(issue.title) || 'No title', issue_path(issue.id) %></li>
+                <li><%= issue.category.name %></li>
+            <% end %>
+          </ul>
+      <% end %>
+      <% unless @evidences.nil? %>
+          <ul>
+            <% for evidence in @evidences do %>
+                <li><%= evidence.content %></li>
+            <% end %>
+          </ul>
+      <% end %>
+      <% unless @notes.nil? %>
+          <ul>
+            <% for note in @notes do %>
+                <li><%= note.text %></li>
+            <% end %>
+          </ul>
+      <% end %>
+    </div>
+  </div>
+</div>

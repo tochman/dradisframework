@@ -19,8 +19,14 @@
 # Application configuration files
 /Gemfile.plugins
 /config/database.yml
+/Gemfile.lock
 
 # Other application data
 /attachments/
 /backup/
 /templates/
+
+.idea/
+.idea/*
+
+

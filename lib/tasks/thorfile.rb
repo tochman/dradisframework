@@ -23,8 +23,8 @@ class DradisTasks < Thor
       begin
         FileUtils.mkdir_p File.dirname(backup_path)
         
-        exporter = Dradis::Plugins::Projects::Export::Package.new
-        exporter.export(filename: backup_path)
+        # exporter = Dradis::Plugins::Projects::Export::Package.new
+        # exporter.export(filename: backup_path)
 
         puts "[  DONE  ]"
         puts "** Backup Saved as: #{backup_path}"
