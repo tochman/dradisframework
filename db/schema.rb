@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20120131171008) do
+ActiveRecord::Schema.define(version: 1) do
 
   create_table "dradis_categories", force: true do |t|
     t.string   "name"

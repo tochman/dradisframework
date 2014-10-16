@@ -1,20 +1,20 @@
 require 'spec_helper'
 
-describe Issue do
+describe Dradis::Core::Issue do
   it "is assigned to the Category.issue category" do
     node = FactoryGirl.create(:node)
-    issue = Issue.new do |i|
+    issue = Dradis::Core::Issue.new do |i|
       i.node = node
     end
     issue.should be_valid()
     issue.save
-    issue.category.should eq(Category.issue)
+    issue.category.should eq(Dradis::Core::Category.issue)
   end
   it "affects many nodes through :evidence" do
     issue = FactoryGirl.create(:issue)
     issue.affected.should be_empty
 
-    host = FactoryGirl::create(:node, :label => '10.0.0.1', :type_id => Node::Types::HOST)
+    host = FactoryGirl::create(:node, :label => '10.0.0.1', :type_id => Dradis::Core::Node::Types::HOST)
     host.evidence.create(:author => 'rspec', :issue_id => issue.id, :content => "#[EvidenceBlock1]#\nThis apache is old!")
 
     issue.reload
@@ -26,7 +26,7 @@ describe Issue do
     evidence = FactoryGirl.create(:evidence, :issue => issue)
     issue.evidence.count.should eq(1)
     issue.destroy
-    Evidence.exists?(evidence.id).should eq(false)
+    Dradis::Core::Evidence.exists?(evidence.id).should eq(false)
   end
 
   # NOTE: the idea of having an Affected field appended to the automagically was
@@ -55,4 +55,34 @@ describe Issue do
   #  issue.reload
   #  issue.fields['Affected'].should eq([node1, node2].collect(&:label).to_sentence)
   #end
+  
+  describe '.search' do
+    it 'searches for issues in the database according to keyword' do
+      issues_1 = FactoryGirl.create_list(:issue, 3, text: 'Issue 1')
+      issue_2 = FactoryGirl.create(:issue, text: 'Issue 2')
+
+      search_results = Dradis::Core::Issue.search('Issue 1')
+      expect(search_results).to have(3).items
+      expect(search_results).to_not include issue_2
+      expect(search_results).to eq issues_1
+    end
+
+    it 'searches for issues case insensitively' do
+      issue_1 = FactoryGirl.create(:issue, text: 'iSSuE 1')
+
+      search_results = Dradis::Core::Issue.search('issue 1')
+      expect(search_results).to have(1).item
+      expect(search_results).to include issue_1
+    end
+
+    it 'excludes notes when searching for issues' do
+      issue_1 = FactoryGirl.create(:issue, text: 'Issue 1')
+      note_1 = FactoryGirl.create(:note, text: 'Note 1')
+
+      search_results = Dradis::Core::Issue.search('Issue 1')
+      expect(search_results).to have(1).item
+      expect(search_results).to include issue_1
+      expect(search_results).to_not include note_1
+    end
+  end
 end

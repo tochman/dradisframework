@@ -11,6 +11,7 @@
 module Dradis
   module Core
     class Issue < Dradis::Core::Note
+      include Pagination
 
       # -- Relationships --------------------------------------------------------
       has_many :evidence, dependent: :destroy
@@ -27,7 +28,8 @@ module Dradis
 
       # -- Class Methods --------------------------------------------------------
       def self.search(keyword)
-        where('text LIKE ?', "%#{keyword}%")
+        issues = where(:node => Node.issue_library)
+        issues.where('text LIKE ?', "%#{keyword}%")
       end
 
       # Create a hash with all issues where the keys correspond to the field passed

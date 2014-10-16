@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Node do
+describe Dradis::Core::Node do
   before(:each) do
-    @node = Node.new
+    @node = Dradis::Core::Node.new
   end
 
   it "shouldn't be valid without a label" do
@@ -25,7 +25,7 @@ describe Node do
     parent.destroy
 
     child_ids.each do |id|
-      lambda{ Node.find(id) }.should raise_error(ActiveRecord::RecordNotFound)
+      lambda{ Dradis::Core::Node.find(id) }.should raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
@@ -41,30 +41,30 @@ describe Node do
     node.destroy
 
     note_ids.each do |id|
-      lambda{ Note.find(id) }.should raise_error(ActiveRecord::RecordNotFound)
+      lambda{ Dradis::Core::Note.find(id) }.should raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
   it "should delete all associated attachments" do
     node = Factory.create(:node)
 
-    attachment = Attachment.new( Rails.root.join('public', 'images', 'rails.png'), :node_id => node.id )
+    attachment = Dradis::Core::Attachment.new( Rails.root.join('public', 'images', 'rails.png'), :node_id => node.id )
     attachment.save
 
     node.destroy
 
-    File.exists?(attachment.fullpath).should be_false
+    File.exists?(attachment.fullpath).should be_falsey
   end
 
   it "should delete it's corresponding attachment subfolder when deleted" do
     node = Factory.create(:node)
 
-    attachment = Attachment.new( Rails.root.join('public', 'images', 'rails.png'), :node_id => node.id )
+    attachment = Dradis::Core::Attachment.new( Rails.root.join('public', 'images', 'rails.png'), :node_id => node.id )
     attachment.save
 
     node.destroy
 
-    File.exists?(Attachment.pwd.join(node.id.to_s)).should be_false
+    File.exists?(Dradis::Core::Attachment.pwd.join(node.id.to_s)).should be_falsey
   end
 
   it "should assign a default 0 position if none is provided" do
@@ -78,7 +78,7 @@ describe Node do
     node = Factory.create(:node)
     node.position = 3
     node.save.should eq(true)
-    node = Node.last
+    node = Dradis::Core::Node.last
     node.position.should eq(3)
   end
 end

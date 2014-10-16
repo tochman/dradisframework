@@ -1,31 +1,37 @@
 module Dradis
   module Frontend
     class SearchController < Dradis::Frontend::AuthenticatedController
+      layout 'dradis/themes/snowcrash'
+
       def search
         keyword = params[:q]
+        return if keyword.blank?
         models = find_models(keyword)
+        keyword = filter_keyword(keyword)
 
-        models.each do |model|
-          #results = ObjectSpace.const_get("Dradis::Core::#{model}").search(keyword)
-           #debugger
-          results = ("Dradis::Core::#{model}".classify.constantize).search(keyword)
-          self.instance_variable_set("@#{model.downcase.pluralize}", results)
+        @results = models.map do |model|
+          m = ("Dradis::Core::#{model}".classify.constantize)
+          m.search(keyword).paginate(page: params[:page])
         end
-        render layout: 'dradis/themes/snowcrash'
+        @type = params[:type].singularize.capitalize if params[:type].present?
       end
 
       private
 
       def find_models(keyword)
-        #debugger
         models = keyword.scan(/is:([a-zA-Z]+)/).flatten.map { |model| model.singularize.capitalize }
-        available_searches = ["Issue", "Note", "Evidence"]
+
+        available_searches = %w(Issue Note Evidence)
 
         if models.empty?
           available_searches
         else
           available_searches & models
         end
+      end
+
+      def filter_keyword(keyword)
+        keyword.gsub(/is:([a-zA-Z]+)/, '').strip
       end
     end
   end

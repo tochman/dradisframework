@@ -1,32 +1,55 @@
-<% title 'Search' %>
+<style>
+    .result {
+        background: #f9f9f9;
+        border-left: 10px solid #ccc;
+        margin: 0.5em 10px;
+        padding: 0.5em 10px;
+        width: 50%;
+    }
+    .result:before {
+        color: #ccc;
+        font-size: 4em;
+        line-height: 0.1em;
+        margin-right: 0.25em;
+        vertical-align: -0.4em;
+    }
+    .result p {
+        display: inline;
+        padding: 0.5em 10px;
+    }
 
-<div class="row-fluid">
-  <div class="span12">
-    <div class="inner">
-      <h2>Search results</h2>
-      <p>We did not find anything.</p>
-      <% unless @issues.nil? %>
-          <ul>
-            <% for issue in @issues do %>
-                <li><%= link_to try(issue.title) || 'No title', issue_path(issue.id) %></li>
-                <li><%= issue.category.name %></li>
-            <% end %>
-          </ul>
-      <% end %>
-      <% unless @evidences.nil? %>
-          <ul>
-            <% for evidence in @evidences do %>
-                <li><%= evidence.content %></li>
-            <% end %>
-          </ul>
-      <% end %>
-      <% unless @notes.nil? %>
-          <ul>
-            <% for note in @notes do %>
-                <li><%= note.text %></li>
-            <% end %>
-          </ul>
+    .result h5 {
+        margin-top: 5px !important;
+        margin-bottom: 3px !important;
+        font-size: 15px !important;
+        font-weight: bold;
+    }
+</style>
+
+<%= content_for(:sidebar) do %>
+  <div class="whatever" style="width: 200px;">
+    <div class="header-inner">
+      <h3>Search results</h3>
+    </div>
+
+    <div class="expansion-container">
+      <% @results.each do |result| %>
+        <%= to_sidebar(result) %>
       <% end %>
     </div>
   </div>
-</div>
+<% end %>
+  <div class="span12">
+    <div class="inner">
+      <% if results_found? %>
+        <% if @type.present? %>
+          <%= search_results(@results.select { |result| result[0].class.name.demodulize == @type }.flatten) %>
+        <% else %>
+          <%= search_results(@results.first) %>
+        <% end %>
+      <% else %>
+         <h4>No Results Found</h4>
+      <% end %>
+    </div>
+  </div>
+

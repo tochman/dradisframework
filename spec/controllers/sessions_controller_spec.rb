@@ -1,7 +1,8 @@
 require 'spec_helper'
 
-describe SessionsController do
-  fixtures :configurations
+describe Dradis::Frontend::SessionsController do
+  set_fixture_class :dradis_configurations => Dradis::Core::Configuration
+  fixtures :dradis_configurations
 
   describe "as guest" do
 

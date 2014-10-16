@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Configuration do
+describe Dradis::Core::Configuration do
   before(:each) do
-    @config = Configuration.new
+    @config = Dradis::Core::Configuration.new
   end
   
   it "shouldn't be valid without a name" do
@@ -32,7 +32,7 @@ describe Configuration do
     @config.value = 'rspec value'
     @config.save
 
-    @config2 = Configuration.new(:name => 'rspec name', :value => 'rspec value')
+    @config2 = Dradis::Core::Configuration.new(:name => 'rspec name', :value => 'rspec value')
     @config2.should_not be_valid
     @config2.should have(1).error_on(:name)
     @config2.errors[:name].first.should == "has already been taken"

@@ -29,6 +29,8 @@ module Dradis
     class Note < ActiveRecord::Base
       self.table_name = 'dradis_notes'
 
+      include Pagination
+
       include WithFields
       with_fields :text
 
@@ -51,7 +53,8 @@ module Dradis
 
       # -- Class Methods --------------------------------------------------------
       def self.search(keyword)
-        where('text LIKE ?', "%#{keyword}%")
+        notes = where.not(:node => Node.issue_library)
+        notes.where('text LIKE ?', "%#{keyword}%")
       end
 
       # -- Instance Methods -----------------------------------------------------

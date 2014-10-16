@@ -1,17 +1,18 @@
 require 'spec_helper'
 
-describe Attachment do
-  fixtures :configurations
+describe Dradis::Core::Attachment do
+  set_fixture_class :dradis_configurations => Dradis::Core::Configuration
+  fixtures :dradis_configurations
 
   before(:each) do
   end
 
   it "should copy the source file into the attachments folder" do
-    node = Node.create!(:label => 'rspec test')
+    node = Dradis::Core::Node.create!(:label => 'rspec test')
 
-    attachment = Attachment.new( Rails.root.join('public', 'images', 'rails.png'), :node_id => node.id )
+    attachment = Dradis::Core::Attachment.new( Rails.root.join('public', 'images', 'rails.png'), :node_id => node.id )
     attachment.save
-    File.exists?(Attachment.pwd + "#{node.id}/rails.png").should be_true
+    File.exists?(Dradis::Core::Attachment.pwd + "#{node.id}/rails.png").should be_true
 
     node.destroy
   end

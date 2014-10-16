@@ -74,8 +74,7 @@ gem 'thor', '~> 0.19.1'
 
 
 # ------------------------------------------------------------------ Test & Dev
-# Gems required for testing
-gem 'rspec-rails', :group => [:development, :test]
+# Gems required for testing and debugging
 
 group :test do
   gem 'database_cleaner'
@@ -84,11 +83,11 @@ group :test do
   gem 'guard-rspec'
 end
 
-group :development do
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'rspec-collection_matchers'
   gem 'debugger'
 end
-
-
 
 
 # =================================================== Other plugins and engines

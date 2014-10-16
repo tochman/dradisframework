@@ -2,13 +2,21 @@ module ControllerMacros
 
   def self.included(base)
     base.extend(ClassMethods)
-    base.fixtures(:configurations)
+    base.set_fixture_class :dradis_configurations => Dradis::Core::Configuration
+    base.fixtures(:dradis_configurations)
+    base.routes { Dradis::Frontend::Engine.routes }
   end
 
   module ClassMethods
     # Get all actions for specified controller
     def get_all_actions(controller_name)
-      controller_class = Module.const_get(controller_name.to_s.pluralize.capitalize + "Controller")
+      controller_class_name = controller_name.to_s.pluralize.capitalize + "Controller"
+      controller_class = nil
+      begin
+        controller_class = controller_class_name.constantize
+      rescue NameError
+        controller_class = "Dradis::Frontend::#{controller_class_name}".constantize
+      end
       controller_class.public_instance_methods(false).reject{ |action| ['rescue_action'].include?(action) || (action =~ /_one_time_conditions/) }
     end
 

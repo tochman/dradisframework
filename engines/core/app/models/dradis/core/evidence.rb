@@ -11,6 +11,8 @@ module Dradis
     class Evidence < ActiveRecord::Base
       self.table_name = 'dradis_evidence'
 
+      include Pagination
+
       include WithFields
       with_fields :content
 
